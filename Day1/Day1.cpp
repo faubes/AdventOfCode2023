@@ -30,6 +30,7 @@ Consider your entire calibration document. What is the sum of all of the calibra
 
 int main()
 {
+	CalibrationDocument TestDocument = CalibrationDocument(std::string("test_input.txt"));
 	CalibrationDocument Document = CalibrationDocument(std::string("input.txt"));
 	std::cout << "Calibration values sum to: " << Document.SumCalibrationValues() << std::endl;
 	return 0;

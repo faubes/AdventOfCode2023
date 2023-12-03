@@ -1,42 +1,98 @@
 #include "CalibrationDocument.h"
 #include <numeric>
 #include <algorithm>
+#include <cassert>
+
+std::vector<string> CalibrationDocument::spelledOutNumbers = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+
 
 int CalibrationDocument::SumCalibrationValues()
 {
 	std::vector<int> codes;
-	std::for_each(lines.cbegin(), lines.cend(), [&codes](const string& line) { codes.push_back(CalibrationDocument::GetTwoDigitNumber(line)); });
+	std::for_each(lines.cbegin(), lines.cend(), 
+		[&codes](const string& line) { codes.push_back(CalibrationDocument::GetTwoDigitNumber(line)); });
+
+
+	for (size_t lineCount = 0; lineCount < lines.size(); lineCount++)
+	{
+		std::cout << lines[lineCount] << " " << codes[lineCount] << std::endl;
+	}
+
 	return std::accumulate(codes.cbegin(), codes.cend(), 0);
 }
 
 
-char CalibrationDocument::ExtractDigit(string line, bool bReverseDirection)
+char CalibrationDocument::ExtractFirstDigit(string line)
 {
 	char digit{};
-	// awkward but iterator & reverse_iterator are different types soooo
-	if (bReverseDirection)
+
+	auto foundFirstDigit = std::find_if(line.cbegin(), line.cend(), std::isdigit);
+	if (foundFirstDigit != line.cend())
 	{
-		auto result = std::find_if(line.crbegin(), line.crend(), std::isdigit);
-		if (result != line.crend())
+		digit = *foundFirstDigit;
+	}
+
+	string::size_type firstNumberOccurrence = string::npos;
+	size_t firstNumberIndex{};
+
+	// naive implementation ; should probably use std::search, std::boyer_moore_searcher
+	// or an FDA to do faster substring parsing
+	for (size_t numberIndex = 0; numberIndex < spelledOutNumbers.size(); numberIndex++)
+	{
+		string number = spelledOutNumbers[numberIndex];
+		size_t numberLength = number.length();
+		auto first = line.find(number);
+		if (first < string::npos && first < firstNumberOccurrence)
 		{
-			digit = *result;
+			firstNumberOccurrence = first;
+			firstNumberIndex = numberIndex;
 		}
 	}
-	else
+	if (firstNumberOccurrence < string::npos && 
+		firstNumberOccurrence < std::distance(line.cbegin(), foundFirstDigit))
 	{
-		auto result = std::find_if(line.cbegin(), line.cend(), std::isdigit);
-		if (result != line.cend())
-		{
-			digit = *result;
-		}
+		digit = std::to_string(firstNumberIndex + 1).front();
 	}
 	return digit;
 }
 
+char CalibrationDocument::ExtractLastDigit(string line)
+{
+	char digit{};
+	auto foundLastDigit = std::find_if(line.crbegin(), line.crend(), std::isdigit);
+	if (foundLastDigit != line.crend())
+	{
+		digit = *foundLastDigit;
+	}
+
+	string::size_type lastNumberOccurrence = string::npos;
+	size_t lastNumberIndex{};
+
+	for (size_t numberIndex = 0; numberIndex < spelledOutNumbers.size(); numberIndex++)
+	{
+		string number = spelledOutNumbers[numberIndex];
+		auto last = line.rfind(number);
+		if (last != string::npos && (lastNumberOccurrence == string::npos || last > lastNumberOccurrence))
+		{
+			lastNumberOccurrence = last;
+			lastNumberIndex = numberIndex;
+		}
+	}
+	size_t distance = std::distance(line.crbegin(), foundLastDigit);
+	string::size_type lastDigitOccurrence = line.size() - distance;
+	if (lastNumberOccurrence < string::npos &&
+		lastNumberOccurrence >= lastDigitOccurrence)
+	{
+		digit = std::to_string(lastNumberIndex + 1).front();
+	}
+	return digit;
+}
+
+
 int CalibrationDocument::GetTwoDigitNumber(string line)
 {
-	char firstDigit = ExtractDigit(line, false);
-	char secondDigit = ExtractDigit(line, true);
+	char firstDigit = ExtractFirstDigit(line);
+	char secondDigit = ExtractLastDigit(line);
 	string twoDigitString{ firstDigit };
 	twoDigitString += secondDigit;
 
@@ -53,5 +109,7 @@ int CalibrationDocument::GetTwoDigitNumber(string line)
 	{
 		std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
 	}
+	
+	//std::cout << line << " --> " << twoDigitNumber << std::endl;
 	return twoDigitNumber;
 }
