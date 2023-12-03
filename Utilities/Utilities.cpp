@@ -18,7 +18,7 @@ InputLoader::InputLoader(std::string filepath)
 std::istream& operator>>(std::istream& in, InputLoader& loader)
 {
 	std::string line;
-	while (in >> line)
+	while (getline(in, line))
 	{
 		if (line.empty())
 		{
@@ -27,4 +27,18 @@ std::istream& operator>>(std::istream& in, InputLoader& loader)
 		loader.lines.push_back(line);
 	}
 	return in;
+}
+
+vector<string> InputLoader::split(string input, string delimiters)
+{
+	vector<string> result{};
+	string::size_type offset = 0;
+	string::size_type findPosition = string::npos;
+	while ((findPosition = input.find_first_of(delimiters, offset)) && findPosition != string::npos)
+	{
+		result.push_back(input.substr(offset, findPosition - offset));
+		offset = findPosition + 1;
+	}
+	result.push_back(input.substr(offset, findPosition));
+	return result;
 }

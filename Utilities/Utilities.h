@@ -21,6 +21,9 @@ struct InputLoader
 
 	friend istream& operator>>(istream& in, InputLoader& loader);
 
+
 public:
 	vector<string> lines;
+	static vector<string> split(string input, string delimiters);
 };
+
