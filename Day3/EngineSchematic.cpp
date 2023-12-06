@@ -3,7 +3,7 @@
 #include <numeric>
 #include <set>
 
-using std::set;
+using std::set; 
 
 
 EngineSchematic::EngineSchematic(string filename) : InputLoader(filename)
@@ -19,8 +19,13 @@ EngineSchematic::EngineSchematic(string filename) : InputLoader(filename)
 		{
 			continue;
 		}
-		auto nextNode = EngineGraph.GetNode(nextCoordinate)->first;
-		if (!std::isdigit(nextNode.Value[0]))
+		auto nextNodeIt = EngineGraph.GetNode(nextCoordinate);
+		if (nextNodeIt == EngineGraph.AdjacencyList.end())
+		{
+			continue;
+		}
+		auto nextNode = nextNodeIt->first;
+		if (std::isdigit(nextNode.Value[0]))
 		{
 			NodesToMerge.push_back(std::make_pair(elem.first, nextNode));
 		}

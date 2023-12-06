@@ -4,6 +4,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <numeric>
 #include <set>
 #include <map>
 
@@ -133,17 +134,20 @@ inline bool Graph<IdType, ValueType>::MergeNodes(Node First, Node Second)
 	vector<Node>& firstNodeAdjacencyList = firstNode->second;
 	vector<Node>& secondNodeAdjacencyList = secondNode->second;
 	vector<Node> mergedAdjacencyList{};
-	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), mergedAdjacencyList.begin());
+	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), std::back_inserter(mergedAdjacencyList));
 
 	RemoveNode(First.Id);
+	/*
 	RemoveNode(Second.Id);
+
 	AddNode(NewId, NewValue);
 	auto& NewNode = GetNode(NewId);
 
 	for (auto& node : mergedAdjacencyList)
 	{
-		LinkNodes(NewNode, node);
+		//LinkNodes(NewNode->first, node);
 	}
+	*/
 	return true;
 }
 
@@ -160,14 +164,14 @@ inline bool Graph<IdType, ValueType>::RemoveNode(IdType Id)
 	vector<Node>& neighbours = foundNode->second;
 	for (auto& elem : neighbours)
 	{
-		auto it = std::find(AdjacencyList.begin(), AdjacencyList.end(), nodeToRemove);
-		if (it != AdjacencyList.end())
+		auto neighbourNode = AdjacencyList.find(elem);
+		if (neighbourNode != AdjacencyList.end())
 		{
-			//AdjacencyList[elem].erase(it);
+			std::remove(neighbourNode->second.begin(), neighbourNode->second.end(), nodeToRemove);
 		}
 	}
 		
-	AdjacencyList.erase(foundNode);
+	AdjacencyList.erase(nodeToRemove);
 }
 
 
