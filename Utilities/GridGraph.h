@@ -29,11 +29,11 @@ struct Coordinates
 
 class GridGraph : public Graph< Coordinates, string > 
 {
+public:
 	Coordinates Dimensions{};
 
-private:
 	std::vector<Coordinates> GridNeighbourhood(Coordinates coordinates);
+	void Construct(std::vector<string> Input, std::function<bool(char)> validSymbol);
 
-public:
-	void Construct(std::vector<string> Input, std::function<bool(char)> validSymbol, std::function<bool(char, char)> mergeNextSymbol);
+	void MergeNeighbouringNodes(std::function<bool(char)> validSymbol);
 };

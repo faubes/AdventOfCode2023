@@ -16,4 +16,5 @@ class EngineSchematic : public InputLoader
 public:
 	EngineSchematic(string filename);
 
+	int32_t SumOfPartNumbers() const;
 };

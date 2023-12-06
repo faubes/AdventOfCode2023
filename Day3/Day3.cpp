@@ -20,6 +20,8 @@ int main()
 
 	EngineSchematic TestSchematic = EngineSchematic("test_input.txt");
 
-	std::cout << TestSchematic;
+	std::cout << TestSchematic << std::endl;
+
+	std::cout << TestSchematic.SumOfPartNumbers() << std::endl;
 	return 0;
 }

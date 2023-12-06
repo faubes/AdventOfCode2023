@@ -26,7 +26,7 @@ std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
 	return GridNeighbours;
 }
 
-void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> validSymbol, std::function<bool(char, char)> mergeNextSymbol)
+void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> validSymbol)
 {
 	if (Input.empty())
 	{
@@ -44,15 +44,7 @@ void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> v
 			
 			if (validSymbol(Input[i][j]))
 			{
-				std::stringstream value{};
-				value << Input[i][j];
-				for (auto nextindex = j + 1; nextindex < Dimensions.y && mergeNextSymbol(Input[i][j], Input[i][nextindex]); nextindex++)
-				{
-					std::cout << Input[i][nextindex];
-					value << Input[i][nextindex];
-					j++;
-				}
-				AddNode(Coordinates{ i,j }, value.str());
+				AddNode(Coordinates{ i,j }, string{ Input[i][j] } );
 			}
 		}
 		std::cout << std::endl;

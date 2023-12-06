@@ -46,11 +46,10 @@ public:
 
 	typedef Graph<IdType, ValueType>::Node NodeType;
 
-protected:
-	map<Node, vector<Node>> AdjacencyList{};
 
 public:
 
+	map<Node, vector<Node>> AdjacencyList{};
 	auto GetNode(IdType Id);
 	bool ContainsNode(IdType Id) const;
 	bool AddNode(IdType Id, ValueType Value);
@@ -133,32 +132,41 @@ inline bool Graph<IdType, ValueType>::MergeNodes(Node First, Node Second)
 	
 	vector<Node>& firstNodeAdjacencyList = firstNode->second;
 	vector<Node>& secondNodeAdjacencyList = secondNode->second;
-	vector<Node> mergedAdjacencyList = std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end());
+	vector<Node> mergedAdjacencyList{};
+	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), mergedAdjacencyList.begin());
 
-	Node NewNode(NewId, NewValue);
-	AdjacencyList.insert(std::make_pair(NewNode, mergedAdjacencyList));
-	
 	RemoveNode(First.Id);
 	RemoveNode(Second.Id);
+	AddNode(NewId, NewValue);
+	auto& NewNode = GetNode(NewId);
+
+	for (auto& node : mergedAdjacencyList)
+	{
+		LinkNodes(NewNode, node);
+	}
 	return true;
 }
 
 template<typename IdType, typename ValueType>
 inline bool Graph<IdType, ValueType>::RemoveNode(IdType Id)
 {
-	auto foundNode = std::find_if(AdjacencyList.begin(), AdjacencyList.end(), [&Id](const auto& elem) { std::equal(elem.first.Id, Id); });
-	if (!foundNode)
+	auto foundNode = std::find_if(AdjacencyList.begin(), AdjacencyList.end(), [&Id](const auto& elem) { return elem.first.Id == Id; });
+	if (foundNode == AdjacencyList.end())
 	{
 		return false; // node not found?
 	}
 
-	Node& nodeToRemove = foundNode->first;
+	const Node& nodeToRemove = foundNode->first;
 	vector<Node>& neighbours = foundNode->second;
-	std::for_each(neighbours.begin(), neighbours.end(), 
-		[](const Node& n) 
-	{ 
-		AdjacencyList[n].erase(nodeToRemove);
-	});
+	for (auto& elem : neighbours)
+	{
+		auto it = std::find(AdjacencyList.begin(), AdjacencyList.end(), nodeToRemove);
+		if (it != AdjacencyList.end())
+		{
+			//AdjacencyList[elem].erase(it);
+		}
+	}
+		
 	AdjacencyList.erase(foundNode);
 }
 
