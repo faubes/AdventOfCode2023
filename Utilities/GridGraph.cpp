@@ -1,5 +1,5 @@
 #include "GridGraph.h"
-
+#include <sstream>
 
 std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
 {
@@ -26,14 +26,14 @@ std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
 	return GridNeighbours;
 }
 
-void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> validSymbol)
+void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> validSymbol, std::function<bool(char, char)> mergeNextSymbol)
 {
 	if (Input.empty())
 	{
 		return;
 	}
-	Dimensions.x = Input[0].size();
-	Dimensions.y = Input.size();
+	Dimensions.x = Input.size();
+	Dimensions.y = Input[0].size();
 
 	// add nodes
 	for (size_t i = 0; i < Dimensions.x; i++)
@@ -41,9 +41,18 @@ void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> v
 		for (size_t j = 0; j < Dimensions.y; j++)
 		{
 			std::cout << Input[i][j];
+			
 			if (validSymbol(Input[i][j]))
 			{
-				AddNode(Coordinates{ i,j }, string{ Input[i][j] });
+				std::stringstream value{};
+				value << Input[i][j];
+				for (auto nextindex = j + 1; nextindex < Dimensions.y && mergeNextSymbol(Input[i][j], Input[i][nextindex]); nextindex++)
+				{
+					std::cout << Input[i][nextindex];
+					value << Input[i][nextindex];
+					j++;
+				}
+				AddNode(Coordinates{ i,j }, value.str());
 			}
 		}
 		std::cout << std::endl;
@@ -64,4 +73,3 @@ void GridGraph::Construct(std::vector<string> Input, std::function<bool(char)> v
 		}
 	}
 }
-

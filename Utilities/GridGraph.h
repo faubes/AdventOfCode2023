@@ -35,5 +35,5 @@ private:
 	std::vector<Coordinates> GridNeighbourhood(Coordinates coordinates);
 
 public:
-	void Construct(std::vector<string> Input, std::function<bool(char)> validSymbol);
+	void Construct(std::vector<string> Input, std::function<bool(char)> validSymbol, std::function<bool(char, char)> mergeNextSymbol);
 };

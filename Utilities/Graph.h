@@ -4,6 +4,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 #include "Utilities.h"
@@ -33,7 +34,7 @@ public:
 
 		bool operator==(const Node& other) const
 		{
-			return Id == other.Id;
+			return Id == other.Id && Value == other.Value;
 		}
 
 		friend ostream& operator<<(ostream& out, const Node& node)
@@ -54,6 +55,7 @@ public:
 	bool ContainsNode(IdType Id) const;
 	bool AddNode(IdType Id, ValueType Value);
 	bool LinkNodes(Node First, Node Second);
+	bool MergeNodes(Node First, Node Second);
 	bool RemoveNode(IdType Id);
 
 	friend ostream& operator<<(ostream& out, const Graph<IdType, ValueType>& g)
@@ -113,6 +115,31 @@ inline bool Graph<IdType, ValueType>::LinkNodes(Node First, Node Second)
 		secondNodeAdjacencyList.push_back(First);
 	}
 
+	return true;
+}
+
+template<typename IdType, typename ValueType>
+inline bool Graph<IdType, ValueType>::MergeNodes(Node First, Node Second)
+{
+	auto firstNode = AdjacencyList.find(First);
+	auto secondNode = AdjacencyList.find(Second);
+
+	if (firstNode == AdjacencyList.end() || secondNode == AdjacencyList.end())
+	{
+		return false; // failed, don't have both nodes
+	}
+	auto NewId = First.Id;
+	auto NewValue = First.Value + Second.Value;
+	
+	vector<Node>& firstNodeAdjacencyList = firstNode->second;
+	vector<Node>& secondNodeAdjacencyList = secondNode->second;
+	vector<Node> mergedAdjacencyList = std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end());
+
+	Node NewNode(NewId, NewValue);
+	AdjacencyList.insert(std::make_pair(NewNode, mergedAdjacencyList));
+	
+	RemoveNode(First.Id);
+	RemoveNode(Second.Id);
 	return true;
 }
 
