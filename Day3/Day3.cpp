@@ -3,21 +3,23 @@
 
 #include "Day3.h"
 
-#include "Graph.h"
+#include "EngineSchematic.h"
 
 int main()
 {
-	typedef Graph<size_t, string> StringGraph;
-	typedef StringGraph::Node Node;
-	StringGraph testGraph{};
+	//typedef Graph<size_t, string> StringGraph;
+	//typedef StringGraph::Node Node;
+	//StringGraph testGraph{};
 
-	testGraph.AddNode(1, "a");
-	testGraph.AddNode(2, "b");
-	Node& node1 = testGraph.GetNode(1);
-	Node& node2 = testGraph.GetNode(2);
+	//testGraph.AddNode(1, "a");
+	//testGraph.AddNode(2, "b");
+	//Node& node1 = testGraph.GetNode(1);
+	//Node& node2 = testGraph.GetNode(2);
 
-	testGraph.LinkNodes(node1, node2);
+	//testGraph.LinkNodes(node1, node2);
 
-	std::cout << testGraph;
+	EngineSchematic TestSchematic = EngineSchematic("test_input.txt");
+
+	std::cout << TestSchematic;
 	return 0;
 }
