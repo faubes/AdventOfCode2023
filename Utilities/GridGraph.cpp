@@ -17,7 +17,7 @@ std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
 			if ((i >= 0 && i < Dimensions.x) &&
 				(j >= 0 && j < Dimensions.y))
 			{
-				GridNeighbours.push_back({ (size_t)i, (size_t)j });
+				GridNeighbours.push_back({ (size_t)i + coordinates.x, (size_t)j + coordinates.y });
 			}
 		}
 	}
