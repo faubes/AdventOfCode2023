@@ -131,10 +131,14 @@ inline bool Graph<IdType, ValueType>::MergeNodes(Node First, Node Second)
 	auto NewId = First.Id;
 	auto NewValue = First.Value + Second.Value;
 	
-	vector<Node>& firstNodeAdjacencyList = firstNode->second;
-	vector<Node>& secondNodeAdjacencyList = secondNode->second;
+	vector<Node> firstNodeAdjacencyList = firstNode->second;
+	vector<Node> secondNodeAdjacencyList = secondNode->second;
 	vector<Node> mergedAdjacencyList{};
-	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), std::back_inserter(mergedAdjacencyList));
+	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), 
+		secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), 
+		std::back_inserter(mergedAdjacencyList));
+	std::remove(mergedAdjacencyList.begin(), mergedAdjacencyList.end(), First);
+	std::remove(mergedAdjacencyList.begin(), mergedAdjacencyList.end(), Second);
 
 	RemoveNode(First.Id);
 	RemoveNode(Second.Id);

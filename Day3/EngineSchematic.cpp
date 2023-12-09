@@ -10,34 +10,39 @@ EngineSchematic::EngineSchematic(string filename) : InputLoader(filename)
 {
 	EngineGraph.Construct(lines, [](const char& a) { return a != '.';  });
 
-
-/*
-	vector<pair<GridGraph::Node, GridGraph::Node>> NodesToMerge;
-	for (auto& elem : EngineGraph.AdjacencyList)
+	bool bFoundNodeToMerge = true;
+	while (bFoundNodeToMerge)
 	{
-		Coordinates currentCoordinates = elem.first.Id;
-		auto nextCoordinate = Coordinates{ currentCoordinates.x, currentCoordinates.y + 1 };
-		if (nextCoordinate.y >= EngineGraph.Dimensions.y)
+		vector<pair<GridGraph::Node, GridGraph::Node>> NodesToMerge;
+		bool bFoundNodeToMerge = false;
+		for (auto& elem : EngineGraph.AdjacencyList)
 		{
-			continue;
+			Coordinates currentCoordinates = elem.first.Id;
+			auto nextCoordinate = Coordinates{ currentCoordinates.x, currentCoordinates.y + 1 };
+			if (nextCoordinate.y >= EngineGraph.Dimensions.y)
+			{
+				continue;
+			}
+			auto nextNodeIt = EngineGraph.GetNode(nextCoordinate);
+			if (nextNodeIt == EngineGraph.AdjacencyList.end())
+			{
+				continue;
+			}
+			auto nextNode = nextNodeIt->first;
+			if (std::isdigit(nextNode.Value[0]))
+			{
+				NodesToMerge.push_back(std::make_pair(elem.first, nextNode));
+				bFoundNodeToMerge = true;
+				break;
+			}
 		}
-		auto nextNodeIt = EngineGraph.GetNode(nextCoordinate);
-		if (nextNodeIt == EngineGraph.AdjacencyList.end())
+		if (!NodesToMerge.empty())
 		{
-			continue;
-		}
-		auto nextNode = nextNodeIt->first;
-		if (std::isdigit(nextNode.Value[0]))
-		{
-			NodesToMerge.push_back(std::make_pair(elem.first, nextNode));
+			const auto& nodesToMerge = NodesToMerge.front();
+			EngineGraph.MergeNodes(nodesToMerge.first, nodesToMerge.second);
+			NodesToMerge.clear();
 		}
 	}
-	
-	for (auto it = NodesToMerge.rbegin(); it < NodesToMerge.rend(); it++)
-	{
-		EngineGraph.MergeNodes(it->first, it->second);
-	}
-*/
 }
 
 int32_t EngineSchematic::SumOfPartNumbers() const
