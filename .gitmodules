@@ -1,3 +1,3 @@
 [submodule "input"]
 	path = input
-	url = git@personal.github.com:faubes/AdventOfCode2023-Input.git
+	url = git@github.com:faubes/AdventOfCode2023-Input

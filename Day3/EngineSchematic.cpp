@@ -10,6 +10,8 @@ EngineSchematic::EngineSchematic(string filename) : InputLoader(filename)
 {
 	EngineGraph.Construct(lines, [](const char& a) { return a != '.';  });
 
+
+/*
 	vector<pair<GridGraph::Node, GridGraph::Node>> NodesToMerge;
 	for (auto& elem : EngineGraph.AdjacencyList)
 	{
@@ -30,10 +32,12 @@ EngineSchematic::EngineSchematic(string filename) : InputLoader(filename)
 			NodesToMerge.push_back(std::make_pair(elem.first, nextNode));
 		}
 	}
-	for (auto& elem : NodesToMerge)
+	
+	for (auto it = NodesToMerge.rbegin(); it < NodesToMerge.rend(); it++)
 	{
-		EngineGraph.MergeNodes(elem.first, elem.second);
+		EngineGraph.MergeNodes(it->first, it->second);
 	}
+*/
 }
 
 int32_t EngineSchematic::SumOfPartNumbers() const

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <numeric>
 #include <cassert>
-#include <strstream>
+//#include <strstream>
 #include <sstream>
 
 
@@ -49,7 +49,7 @@ CubeGameDataPoint::CubeGameDataPoint(string input)
 	{
 		try
 		{
-			auto firstNumber = std::find_if(dataInput.begin(), dataInput.end(), std::isdigit);
+			auto firstNumber = std::find_if(dataInput.begin(), dataInput.end(), [](unsigned char c){ return std::isdigit(c); });
 			auto distance = std::distance(dataInput.begin(), firstNumber);
 			int count = std::stoi(dataInput.substr(distance, distance+1));
 			CubeColour colour = fromString(dataInput);

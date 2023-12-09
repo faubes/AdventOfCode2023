@@ -137,17 +137,15 @@ inline bool Graph<IdType, ValueType>::MergeNodes(Node First, Node Second)
 	std::set_union(firstNodeAdjacencyList.begin(), firstNodeAdjacencyList.end(), secondNodeAdjacencyList.begin(), secondNodeAdjacencyList.end(), std::back_inserter(mergedAdjacencyList));
 
 	RemoveNode(First.Id);
-	/*
 	RemoveNode(Second.Id);
 
 	AddNode(NewId, NewValue);
-	auto& NewNode = GetNode(NewId);
+	auto NewNode = GetNode(NewId);
 
 	for (auto& node : mergedAdjacencyList)
 	{
-		//LinkNodes(NewNode->first, node);
+		LinkNodes(NewNode->first, node);
 	}
-	*/
 	return true;
 }
 
@@ -172,6 +170,7 @@ inline bool Graph<IdType, ValueType>::RemoveNode(IdType Id)
 	}
 		
 	AdjacencyList.erase(nodeToRemove);
+	return true;
 }
 
 

@@ -1,4 +1,6 @@
 #include "GridGraph.h"
+
+#include <iostream>
 #include <sstream>
 
 std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
@@ -14,15 +16,22 @@ std::vector<Coordinates> GridGraph::GridNeighbourhood(Coordinates coordinates)
 			if (i == 0 && j == 0)
 				continue;
 
-			if ((i >= 0 && i < Dimensions.x) &&
-				(j >= 0 && j < Dimensions.y))
+			size_t neighbour_x = (size_t)i + coordinates.x;
+			size_t neighbour_y = (size_t)j + coordinates.y;
+			if ((neighbour_x >= 0 && neighbour_x < Dimensions.x) &&
+				(neighbour_y >= 0 && neighbour_y < Dimensions.y))
 			{
-				GridNeighbours.push_back({ (size_t)i + coordinates.x, (size_t)j + coordinates.y });
+				GridNeighbours.push_back({neighbour_x, neighbour_y  });
 			}
 		}
 	}
 
-
+	std::cout << coordinates << " ";
+	for (const auto& neighbour : GridNeighbours)
+	{
+		std::cout << neighbour << " ";
+	}
+	std::cout << std::endl;
 	return GridNeighbours;
 }
 

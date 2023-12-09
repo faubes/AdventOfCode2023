@@ -2,6 +2,7 @@
 #include <numeric>
 #include <algorithm>
 #include <cassert>
+#include <cctype>
 
 std::vector<string> CalibrationDocument::spelledOutNumbers = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
 
@@ -26,7 +27,7 @@ char CalibrationDocument::ExtractFirstDigit(string line)
 {
 	char digit{};
 
-	auto foundFirstDigit = std::find_if(line.cbegin(), line.cend(), std::isdigit);
+	auto foundFirstDigit = std::find_if(line.cbegin(), line.cend(), [](unsigned char c){ return std::isdigit(c); });
 	if (foundFirstDigit != line.cend())
 	{
 		digit = *foundFirstDigit;
@@ -59,7 +60,7 @@ char CalibrationDocument::ExtractFirstDigit(string line)
 char CalibrationDocument::ExtractLastDigit(string line)
 {
 	char digit{};
-	auto foundLastDigit = std::find_if(line.crbegin(), line.crend(), std::isdigit);
+	auto foundLastDigit = std::find_if(line.crbegin(), line.crend(), [](unsigned char c){ return std::isdigit(c); });
 	if (foundLastDigit != line.crend())
 	{
 		digit = *foundLastDigit;
